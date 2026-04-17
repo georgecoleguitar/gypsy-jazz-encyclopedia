@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maîtres de la Guitare Manouche</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IM+Fell+English:ital@0;1&family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0f00;
+    --parchment: #f5ead6;
+    --sepia: #7a5c2e;
+    --gold: #c8972a;
+    --rust: #8b3a1a;
+    --cream: #fdf6e8;
+    --warm-gray: #8a7a6a;
+    --dark-sepia: #3d2a10;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(200,151,42,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,58,26,0.05) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+    border-bottom: 3px double var(--gold);
+    background: linear-gradient(180deg, rgba(200,151,42,0.08) 0%, transparent 100%);
+  }
+
+  .header-ornament {
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.5em;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  header h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--dark-sepia);
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    text-shadow: 1px 1px 0 rgba(200,151,42,0.3);
+  }
+
+  header h1 span {
+    display: block;
+    font-size: 0.55em;
+    font-weight: 400;
+    color: var(--sepia);
+    letter-spacing: 0.2em;
+    margin-top: 8px;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+
+  .header-sub {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--warm-gray);
+    margin-top: 18px;
+    letter-spacing: 0.03em;
+  }
+
+  .decorative-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px auto;
+    max-width: 500px;
+  }
+  .decorative-line::before,
+  .decorative-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .decorative-line .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* SEARCH & FILTER */
+  .controls {
+    max-width: 900px;
+    margin: 30px auto 20px;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 360px;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border: 1.5px solid var(--gold);
+    border-radius: 2px;
+    background: rgba(245,234,214,0.6);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--rust); background: rgba(245,234,214,0.9); }
+  .search-wrap input::placeholder { color: var(--warm-gray); font-style: italic; }
+
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .era-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .era-btn {
+    padding: 7px 16px;
+    border: 1.5px solid var(--sepia);
+    background: transparent;
+    color: var(--sepia);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .era-btn:hover, .era-btn.active {
+    background: var(--dark-sepia);
+    border-color: var(--dark-sepia);
+    color: var(--parchment);
+  }
+
+  /* RESULTS COUNT */
+  .results-info {
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--warm-gray);
+    font-size: 0.92rem;
+    margin-bottom: 24px;
+  }
+
+  /* GRID */
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--parchment);
+    border: 1px solid rgba(122,92,46,0.3);
+    border-top: 3px solid var(--gold);
+    padding: 26px 24px 22px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: fadeUp 0.5s ease both;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(200,151,42,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(61,42,16,0.18), 0 2px 0 var(--gold);
+  }
+
+  .card-era {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--rust);
+    font-family: 'Crimson Pro', serif;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.32rem;
+    font-weight: 700;
+    color: var(--dark-sepia);
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+
+  .card-dates {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--warm-gray);
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+  }
+
+  .card-nationality {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sepia);
+    border: 1px solid rgba(122,92,46,0.35);
+    padding: 2px 8px;
+    margin-bottom: 14px;
+    font-family: 'Crimson Pro', serif;
+  }
+
+  .card-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 14px;
+    opacity: 0.5;
+  }
+
+  .card-bio {
+    font-size: 0.96rem;
+    line-height: 1.72;
+    color: #2c1f0a;
+    font-weight: 300;
+  }
+
+  .card-tags {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 0.72rem;
+    padding: 3px 9px;
+    background: rgba(122,92,46,0.1);
+    border: 1px solid rgba(122,92,46,0.2);
+    color: var(--sepia);
+    font-family: 'Crimson Pro', serif;
+    letter-spacing: 0.04em;
+  }
+
+  .corner-ornament {
+    position: absolute;
+    bottom: 14px; right: 16px;
+    font-size: 1.2rem;
+    color: var(--gold);
+    opacity: 0.4;
+  }
+
+  /* NO RESULTS */
+  .no-results {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--warm-gray);
+    font-size: 1.2rem;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    border-top: 3px double var(--gold);
+    padding: 30px 20px;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--warm-gray);
+    font-size: 0.88rem;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,15,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--cream);
+    border: 1px solid var(--gold);
+    border-top: 4px solid var(--gold);
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 40px;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none; border: none;
+    font-size: 1.4rem;
+    color: var(--warm-gray);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--rust); }
+
+  .modal-era { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--rust); margin-bottom: 8px; }
+  .modal-name { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--dark-sepia); line-height: 1.1; }
+  .modal-dates { font-family: 'IM Fell English', serif; font-style: italic; color: var(--warm-gray); margin: 6px 0 12px; }
+  .modal-nationality { display: inline-block; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sepia); border: 1px solid rgba(122,92,46,0.4); padding: 3px 10px; margin-bottom: 20px; }
+  .modal-divider { height: 1px; background: linear-gradient(90deg, var(--gold), rgba(200,151,42,0.1)); margin-bottom: 20px; }
+  .modal-bio { font-size: 1.05rem; line-height: 1.82; color: #2c1f0a; font-weight: 300; }
+  .modal-bio p + p { margin-top: 1em; }
+  .modal-tags { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 7px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-ornament">✦ ✦ ✦</span>
+  <h1>Maîtres de la Guitare Manouche
+    <span>Masters of Gypsy Jazz Guitar</span>
+  </h1>
+  <div class="decorative-line"><div class="diamond"></div></div>
+  <p class="header-sub">A compendium of the virtuosos who gave voice to the music of the Romani soul</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">♪</span>
+    <input type="text" id="searchInput" placeholder="Search by name, nationality…" oninput="filterCards()">
+  </div>
+  <div class="era-filters" id="eraFilters"></div>
+</div>
+
+<p class="results-info" id="resultsInfo"></p>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  <div class="decorative-line"><div class="diamond"></div></div>
+  <p>From the <em>manouche</em> caravans of Paris to stages across the world — the flame endures.</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const guitarists = [
+  {
+    name: "Django Reinhardt",
+    dates: "1910 – 1953",
+    nationality: "Belgian-Romani",
+    era: "Founding Era",
+    tags: ["Quintette du Hot Club", "Jazz Manouche", "Improvisation", "QHCF"],
+    bio: "Born Jean Reinhardt on January 23, 1910, in a Romani caravan parked in Liberchies, Belgium, Django was the child of a traveling entertainer father and a mother of Romani-Manouche descent. The family drifted between Belgium and the outskirts of Paris, living in the encampments of Romani caravans at the city\'s edge — a world apart from bourgeois France, self-contained and musical to its core. Django taught himself banjo and then guitar as a small child, absorbing music by ear with the total immersion that characterized the Romani oral tradition. By his early teens he was already playing in the dance halls and cafes of Paris, earning money to help his family.\\n\\nThen, on the night of November 2, 1928, a candle ignited the cellulose flowers that lined the interior of his caravan, and the fire spread with terrible speed. Django\'s left hand was catastrophically burned — the ring and little fingers permanently fused into a single gnarled mass, the others severely damaged. Doctors told him he would never play again. He was eighteen years old.\\n\\nWhat happened next is one of music\'s most extraordinary stories of reinvention. Confined to bed for over a year during his recovery, Django taught himself an entirely new technique, using only the index and middle fingers of his scarred left hand for fretting, while the fused fingers — held rigid — were repurposed as a kind of barre for chord voicings. The limitation became a signature: his chords were unusual, his phrasing idiosyncratic, his octave passages and chromatic runs unlike anything anyone had heard before. He did not compensate for his injury — he transformed it into an identity.\\n\\nIn 1934, Django met violinist Stéphane Grappelli at the Hôtel Claridge in Paris, and the Quintette du Hot Club de France was born. The ensemble — two rhythm guitars, a bass guitar, violin, and lead guitar — was without precedent in jazz. There were no horns, no piano, no drums. The music was entirely string-driven, light and airborne yet rhythmically propulsive, a fusion of American swing with Romani melody and European café music. Django was its irreplaceable center. His tone on a Selmer-Maccaferri guitar — warm, piercing, singing — was unlike any electric guitar sound of the era, and his improvisational invention was inexhaustible. Recordings such as \'Minor Swing,\' \'Nuages,\' \'Djangology,\' \'Daphne,\' \'Belleville,\' and \'Swing 42\' became the permanent repertoire of a new genre that did not yet have a name.\\n\\nHe was not simply a technical marvel, though he was certainly that. What set Django apart was melodic genius — an ability to construct solos of perfect shape and inevitability, full of surprises that sounded, in retrospect, inevitable. He was also deeply blues-influenced, having absorbed American jazz recordings voraciously, and this blues feeling — the bent notes, the smears, the expressive vibrato — gave his music an emotional directness that transcended genre. Duke Ellington, who toured with Django in 1946, said he had never heard anything like it. Coleman Hawkins, Benny Carter, and other American masters who recorded with him in Paris were visibly awed.\\n\\nThe German occupation of Paris during World War II placed Django and the Romani community in mortal danger — the Nazis were systematically exterminating the Romani people alongside Jewish Europeans. Django navigated the occupation with characteristic audacity, continuing to perform and record even as his community suffered, and making at least one attempted escape from occupied France. The recordings he made during the war years, including the haunting \'Nuages,\' became anthems of hope and melancholy for a city under oppression.\\n\\nIn his final years Django became fascinated by bebop and the electric guitar, shedding much of the Hot Club sound in pursuit of something harder and more angular. His late recordings — made with young Paris beboppers who idolized Charlie Parker — reveal a player still evolving, still restless, still ahead of his time. He died of a cerebral hemorrhage on May 16, 1953, while fishing near his home in Samois-sur-Seine. He was forty-three years old. The tradition he founded now spans the globe, with festivals, camps, schools, and thousands of devoted practitioners on every continent — all of them, in one way or another, his children."
+  },
+  {
+    name: "Bireli Lagrène",
+    dates: "1966 – present",
+    nationality: "French-Romani",
+    era: "Modern Era",
+    tags: ["Child Prodigy", "Fusion", "Bebop", "Django Tribute"],
+    bio: "Born on September 4, 1966, in Souffelweyersheim, Alsace, into a large Romani-Manouche family where music was inseparable from daily life, Biréli Lagrène was playing Django\'s music with adult fluency before he was ten years old. The story of his emergence is almost mythological: a Romani child from the caravans of Alsace, absorbing the tradition through sheer immersion, producing solos of mature beauty before he had any formal musical education at all. His father played guitar; so did his uncles and cousins. The tradition was passed hand to hand, note by note, in the way it had always been transmitted.\\n\\nAt age twelve he was recorded for what would become the album Routes to Django, released on the German MPS label in 1980. The effect on the international gypsy jazz community was seismic. Here was a child playing with the tone, timing, and melodic authority of a seasoned master — not imitating Django so much as channeling him, playing from the same deep well of the tradition. European jazz critics fell over themselves to describe what they were hearing. The Django festival at Samois-sur-Seine, which had been searching for a worthy heir to the tradition, found it in this twelve-year-old from Alsace.\\n\\nWhat distinguished Lagrène from every other Django acolyte, then and since, was that he never stopped growing. Where others found a home in the tradition and settled there, Lagrène was constitutionally restless. By his late teens he was already exploring jazz fusion, electric guitar, and the music of Jaco Pastorius, with whom he eventually recorded in 1986 — a collaboration that produced the album Stuttgart Aria and marked a decisive turn toward electric jazz-rock. He absorbed bebop, worked with fusion musicians, studied the harmonic language of post-war jazz, and emerged in his twenties as a complete musician who could play at the highest level in almost any jazz context.\\n\\nYet the manouche tradition remained his deepest root, and he has returned to it throughout his career with recordings that remind listeners why he was always considered something exceptional. His Gypsy Project albums, recorded in the early 2000s with violinist Florin Niculescu and other European masters, are widely regarded as among the finest gypsy jazz recordings of the modern era — combining technical perfection with a burning emotional commitment that purely academic players rarely achieve. His live performances continue to draw gasps: the right-hand velocity, the tone, the way long melodic phrases unfurl with the ease of breathing. He is, by most serious reckoning, the greatest living practitioner of the tradition Django created."
+  },
+  {
+    name: "Stochelo Rosenberg",
+    dates: "1968 – present",
+    nationality: "Dutch-Romani",
+    era: "Modern Era",
+    tags: ["Rosenberg Trio", "Speed", "Hot Club Style", "Netherlands"],
+    bio: "Born in 1968 in the Netherlands into the sprawling Rosenberg Romani musical clan, Stochelo Rosenberg grew up in a world where playing guitar was as natural and necessary as speech. The Rosenbergs were — and remain — one of the great musical families of the European Romani world, producing guitarists, bassists, and rhythm players across multiple generations with a consistency that suggests the music is literally in the blood. Stochelo absorbed the Django tradition from childhood, learning from elders and cousins in the oral way, without notation or formal instruction, simply by listening and playing until the music became his own.\\n\\nWith his cousins Nous\'che Rosenberg on rhythm guitar and Nonnie Rosenberg on bass guitar, he formed the Rosenberg Trio in the late 1980s, and the group\'s impact on the gypsy jazz world was immediate and lasting. Their first recordings — released on the Polygram-affiliated label and later on their own Djaz imprint — circulated throughout Europe and beyond, introducing a generation of listeners to the Hot Club style played with a ferocity and purity that few had heard since Django himself. The Trio did not modernize or dilute the tradition; they simply played it better than almost anyone alive.\\n\\nStochelo\'s playing is a study in what absolute stylistic commitment can yield. He made a choice, early and deliberately, to devote himself entirely to the Django idiom rather than expanding into other forms of jazz or fusion, and the depth he achieved through that focus is extraordinary. His right-hand technique — a powerful, diving rest-stroke that extracts a warm, percussive tone from his Favino guitar — is considered the gold standard of the manouche picking style. His left-hand vocabulary, built from years of total immersion in the tradition, is comprehensive to the point of inexhaustibility: every standard in the repertoire explored from every angle, every substitution and melodic approach internalized. His recording of \'Seresta,\' a dreamy waltz by Django, is among the most beautiful things in the gypsy jazz canon.\\n\\nHis influence on younger players has been enormous — perhaps second only to Django himself in terms of the guitarists who cite him as the primary model for their technique and conception."
+  },
+  {
+    name: "Fapy Lafertin",
+    dates: "1950 – present",
+    nationality: "Belgian-Romani",
+    era: "Post-Django Era",
+    tags: ["Belgian Tradition", "Vintage Style", "Composer"],
+    bio: "One of the most important bridges between Django's generation and the modern revival, Fapy Lafertin was born in Ghent and grew up immersed in the Belgian Romani guitar tradition. His playing captures the dark, smoky lyricism of Django's 1940s recordings with an authenticity that goes beyond imitation — it is a living transmission from the same cultural root.\n\nLafertin has been a tireless educator and ambassador for the tradition, collaborating with American swing revivalists and European jazz institutions alike. His compositions display an impressive melodic gift, and his tone on recordings such as 'Fais-Moi Confiance' reveals a depth of feeling that places him firmly among the masters."
+  },
+  {
+    name: "Dorado Schmitt",
+    dates: "1957 – present",
+    nationality: "French-Romani",
+    era: "Modern Era",
+    tags: ["Schmitt Family", "French Tradition", "Composer", "Educator"],
+    bio: "A cornerstone of the French gypsy jazz tradition and patriarch of one of its most celebrated musical dynasties. Dorado Schmitt grew up in the Romani encampments around Strasbourg and Paris, learning guitar in the time-honored manouche way — by ear, by imitation, and by playing alongside elders. His style is rooted in the melodic vocabulary of Django but inflected with a distinctively French lyrical warmth.\n\nHis son Samson Schmitt has become a celebrated guitarist in his own right, and the two often perform together, creating a living illustration of the oral tradition in action. Dorado has recorded prolifically and performed worldwide, carrying the flame of authentic manouche music with grace and humility."
+  },
+  {
+    name: "Samson Schmitt",
+    dates: "1982 – present",
+    nationality: "French-Romani",
+    era: "Contemporary Era",
+    tags: ["Schmitt Family", "New Generation", "Virtuoso"],
+    bio: "Son of Dorado Schmitt and heir to one of the great names in manouche guitar, Samson Schmitt has developed into a fully independent voice who honors the tradition while expanding it with contemporary jazz harmony and a restless improvisational spirit. His technique is clean, his lines flow with an ease that belies their complexity, and his musical maturity arrived early.\n\nHe performs frequently in duo with his father as well as leading his own projects, and has collaborated with Biréli Lagrène and international jazz artists. Samson represents the healthiest possible outcome for a deep tradition: deep respect married to genuine originality."
+  },
+  {
+    name: "Jimmy Rosenberg",
+    dates: "1980 – present",
+    nationality: "Dutch-Romani",
+    era: "Contemporary Era",
+    tags: ["Rosenberg Family", "Prodigy", "Netherlands"],
+    bio: "A prodigy of almost frightening ability who astonished the gypsy jazz world as a child and went on to carve a turbulent but brilliant career. Jimmy Rosenberg — cousin to Stochelo — was filmed as a young boy displaying a right-hand technique of extraordinary velocity and a left-hand melodic invention already beyond his years. The documentary 'The Angel of Amsterdam' brought him international attention and cult status.\n\nHis personal life has been marked by significant difficulties, but at his best Jimmy Rosenberg plays with an emotional directness and bluesy intensity that distinguishes him even within a family of exceptional guitarists. His recordings from the 1990s and early 2000s remain revered documents of his talent."
+  },
+  {
+    name: "Tchavolo Schmitt",
+    dates: "1954 – present",
+    nationality: "French-Romani",
+    era: "Post-Django Era",
+    tags: ["French Tradition", "Manouche Elder", "Lyrical Style"],
+    bio: "Born Marcel Schmitt in 1954 in the Romani community of Forbach, a small city in the Moselle region of northeastern France close to the German border, Tchavolo Schmitt — the name Tchavolo is a traditional Romani nickname — grew up in a world where the guitar was the central communal instrument and Django Reinhardt was not a distant legend but a living presence in the memory of the community\'s elders. He learned guitar the way all the great manouche players learned it: by ear, by watching, by playing alongside older musicians from childhood, the tradition passing from hand to hand without scores or formal lessons.\\n\\nCrucially, Tchavolo was old enough to play alongside musicians who had known and performed with Django himself. He played with Joseph Reinhardt, Django\'s younger brother, absorbing something of the first generation\'s feel and vocabulary in a direct transmission that is no longer possible for younger players. This historical connection gives his playing a quality that is difficult to name but immediately audible — a certain ease with the style, a naturalness in the phrasing that comes not from study but from lived immersion across a lifetime.\\n\\nHis recordings, particularly those made for the French jazz label Dreyfus Jazz in the 2000s, are among the most musically satisfying documents of the contemporary manouche tradition. Albums such as Manoir de Mes Rêves and Sinti reveal a guitarist of rare vocal quality — his single-note lines sing with a warmth and expressiveness that recall the human voice more than most instrumentalists ever achieve. His sense of time is deep and relaxed, his vibrato distinctive and personal, his chord work harmonically rich without ever becoming academic. He has performed and recorded with Stochelo Rosenberg, Dorado Schmitt, and many others, and his collaborations with younger players serve as masterclasses in how the tradition should feel when it has truly been absorbed."
+  },
+  {
+    name: "Angelo Debarre",
+    dates: "1962 – present",
+    nationality: "French-Romani",
+    era: "Modern Era",
+    tags: ["Paris Scene", "Composer", "Innovative Harmony"],
+    bio: "A Parisian-born guitarist of fierce technique and notable harmonic sophistication who has done as much as anyone of his generation to push gypsy jazz into new harmonic territory without losing its Romani soul. Debarre grew up in the Paris suburbs and absorbed the manouche style from the community around him before developing a personal voice marked by chromatic boldness and rhythmic ferocity.\n\nHe has collaborated extensively with American jazz musicians — including guitarist Bucky Pizzarelli — demonstrating a facility for swing dialogue that places him comfortably alongside the best mainstream jazz players. His compositions are intricate and his improvisations show a sophisticated engagement with modern jazz harmony."
+  },
+  {
+    name: "Tcha Limberger",
+    dates: "1976 – present",
+    nationality: "Belgian-Romani",
+    era: "Contemporary Era",
+    tags: ["Multi-Instrumentalist", "Violin", "Singing", "Researcher"],
+    bio: "A remarkable polymath of the manouche tradition who plays guitar, violin, and sings in Romani, French, and English — and who is also a serious scholar of pre-war jazz and Romani music. Born in Antwerp into the Limberger musical family, Tcha absorbed the Belgian Romani tradition from childhood and has spent his career documenting and performing music from the Hot Club era with extraordinary authenticity.\n\nHis guitar playing is rooted in the direct style of the 1930s and 1940s Romani guitarists, and his ensemble work with violinists and other string players recreates the atmospheric intimacy of the café concerts where gypsy jazz was born. He is both a practitioner and a living archive."
+  },
+  {
+    name: "Joscho Stephan",
+    dates: "1979 – present",
+    nationality: "German",
+    era: "Contemporary Era",
+    tags: ["Germany", "Django Festival", "Jazz Manouche"],
+    bio: "The leading figure in German gypsy jazz and one of the most celebrated non-Romani guitarists in the Hot Club tradition worldwide. Joscho Stephan grew up in Krefeld and discovered Django Reinhardt as a teenager, proceeding to develop a command of the style that rivals the best Romani practitioners. His tone is full and warm, his right-hand attack crisp, and his improvisations reveal a thorough assimilation of the idiom.\n\nHe has performed at the Django Reinhardt Festival in Samois-sur-Seine — the annual pilgrimage of the manouche world — and has recorded prolifically for European labels. Stephan is also a committed educator and has helped introduce the tradition to a new generation of German players."
+  },
+  {
+    name: "Gonzalo Bergara",
+    dates: "1977 – present",
+    nationality: "Argentine",
+    era: "Contemporary Era",
+    tags: ["Argentina", "Latin Jazz Manouche", "Los Angeles"],
+    bio: "A Buenos Aires-born guitarist who has become one of the most compelling voices in gypsy jazz outside Europe, blending the Hot Club tradition with the tango and Latin jazz sensibilities of his Argentine roots. Bergara discovered Django as a teenager and moved to the United States where he built a substantial reputation on the Los Angeles jazz scene.\n\nHis quartet recordings and international performances demonstrate a deft synthesis: the manouche vocabulary is fluently spoken, but the rhythmic feel carries traces of South American music that give his playing a distinctive warmth and swing. He is also a noted educator and clinician."
+  },
+  {
+    name: "Ninine Garcia",
+    dates: "1964 – present",
+    nationality: "French-Romani",
+    era: "Modern Era",
+    tags: ["Rhythm Guitar", "Pompe", "French Manouche"],
+    bio: "Celebrated as one of the finest rhythm guitarists in the manouche tradition — a role that is far more demanding and musical than it might appear to the uninitiated. Born into a Romani family in France, Ninine Garcia has devoted much of his career to the art of the 'pompe' — the distinctive four-to-the-bar chordal strumming that provides the rhythmic engine of Hot Club jazz.\n\nHe also plays lead guitar with considerable skill and has recorded as a frontman, but his reputation rests on a mastery of accompaniment that makes him the first call of many leading soloists when they want the best possible underpinning for their improvisations."
+  },
+  {
+    name: "Rocky Gresset",
+    dates: "1983 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["Contemporary Harmony", "Fingerstyle", "Paris"],
+    bio: "A Parisian guitarist of the younger generation whose playing integrates the manouche tradition with the harmonic world of contemporary jazz in an unusually seamless and personal way. Rocky Gresset studied formally at the Paris Conservatoire while simultaneously absorbing the Hot Club idiom from direct contact with the Romani community, a dual formation that gives his music unusual breadth.\n\nHis recordings as a leader show a guitarist comfortable with the chromatic harmony of post-bop but rhythmically rooted in the propulsive swing of gypsy jazz. He represents one of the most thoughtful paths forward for a tradition that must constantly negotiate between preservation and evolution."
+  },
+  {
+    name: "Romane",
+    dates: "1959 – present",
+    nationality: "French",
+    era: "Modern Era",
+    tags: ["Composer", "Educator", "Method Books", "Paris"],
+    bio: "Born Claude Romane in Paris, this guitarist and composer has made an enormous contribution to the propagation of gypsy jazz through his meticulous pedagogical works — his instructional books and transcriptions of Django's repertoire are used by students worldwide and have done more than any other published material to make the style learnable outside the oral tradition.\n\nAs a performer, Romane is elegant and harmonically refined, his playing reflecting a deep study of Django alongside broader jazz influences. He has collaborated with many of the tradition's leading figures and recorded a number of highly regarded albums. His role as educator may ultimately prove as significant as his performing career."
+  },
+  {
+    name: "Sébastien Giniaux",
+    dates: "1983 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["Classical Influence", "Solo Guitar", "Innovation"],
+    bio: "A Parisian guitarist of exceptional breadth who moves fluidly between gypsy jazz, classical music, and Brazilian choro. Giniaux studied classical guitar at the Paris Conservatoire and absorbed jazz from direct exposure to the manouche community, an unusual synthesis that has led to a distinctive solo guitar practice unlike anyone else in the tradition.\n\nHis solo recordings feature elaborate counterpoint, unusual voicings, and a compositional approach that treats the guitar as an orchestra. While clearly rooted in the Hot Club aesthetic, his music opens outward in directions Django himself might have been fascinated by. He is one of the most intellectually adventurous figures in contemporary gypsy jazz."
+  },
+  {
+    name: "Boulou Ferré",
+    dates: "1951 – present",
+    nationality: "French-Romani",
+    era: "Post-Django Era",
+    tags: ["Bebop", "Classical", "Elios Ferré", "Crossover"],
+    bio: "Born in Paris in 1951 into a Catalan Romani family with deep musical roots, Boulou Ferré was recognized as a prodigy almost from infancy. His father, Matelo Ferré, was one of the key rhythm guitarists of the Quintette du Hot Club de France era, playing alongside Django Reinhardt himself — meaning that Boulou grew up not merely near the tradition but literally inside it, learning from one of the men who had helped create it. He began playing guitar seriously as a small child and was performing in Paris jazz clubs while still a teenager, drawing comparisons to Django that he wore with dignity rather than anxiety.\\n\\nWhat made Boulou extraordinary was that he refused to limit himself to the Django tradition alone. He studied classical guitar alongside jazz, absorbed bebop with the same thoroughness he brought to manouche music, and developed a harmonic language that drew on all of these sources simultaneously. His chord voicings are unusual — dense, colorful, sometimes startling — and his improvised lines move through the tradition\'s vocabulary into bebop territory and back with a naturalness that lesser players rarely achieve. He is, alongside Biréli Lagrène, one of the architects of what gypsy jazz becomes when it takes bebop seriously.\\n\\nIn duo with his younger brother Elios, Boulou created recordings that stand among the most remarkable guitar duets in all of jazz. Their albums for the Enja label — particularly Gypsy Waltz and IMF — are masterworks of contrapuntal invention, two players of complementary temperament weaving together lines of extraordinary complexity with an intimacy that only siblings who have played together since childhood can achieve."
+  },
+  {
+    name: "Elios Ferré",
+    dates: "1956 – present",
+    nationality: "French-Romani",
+    era: "Post-Django Era",
+    tags: ["Bebop", "Ferré Brothers", "Duo Guitar"],
+    bio: "Younger brother of Boulou by five years, Elios Ferré was born in Paris in 1956 into the same extraordinarily musical Romani-Catalan family, the same immersive environment of professional jazz, and the same early proximity to the Quintette du Hot Club de France through their father Matelo. He developed in Boulou\'s considerable shadow, but the shadow was generative rather than stifling — having an older brother of that caliber meant a constant challenge and a constant education.\\n\\nElios\'s playing is distinguishable from Boulou\'s by a slightly warmer, more lyrical quality in his single-note lines, a preference for melodic singing over harmonic density, though the harmonic intelligence is always present. Where Boulou can tend toward boldness and surprise, Elios brings a kind of eloquence — long melodic statements that unfold with classical inevitability. Together, the contrast makes their duo playing extraordinarily rich: two voices that complement each other the way a perfectly matched pair of instruments do.\\n\\nBoth Ferré brothers have largely remained underappreciated outside the specialist gypsy jazz world, their recordings difficult to find and their careers less publicized than their extraordinary talent warrants. This is one of the tradition\'s quiet injustices. Anyone who spends time with their Enja recordings will find playing of the highest imaginable order."
+  },
+  {
+    name: "Lollo Meier",
+    dates: "1943 – present",
+    nationality: "German-Romani",
+    era: "Post-Django Era",
+    tags: ["German Sinti", "Traditional Style", "Elder"],
+    bio: "A senior figure in the German Sinti musical tradition and one of the last living direct links to the generation of guitarists who knew Django Reinhardt personally. Lollo Meier grew up in the German Romani community where guitar playing was as natural as breathing, and he absorbed the Hot Club style at its source.\n\nHis playing carries the weathered authority of a lifetime spent with the music — there is nothing academic or derivative about it. He has been an important mentor to younger German gypsy jazz players and his recordings serve as invaluable documents of the style as it was practiced in the Sinti communities of Germany."
+  },
+  {
+    name: "Hans'che Weiss",
+    dates: "1937 – 2010",
+    nationality: "German-Romani",
+    era: "Post-Django Era",
+    tags: ["German Sinti", "Elder", "Tradition Bearer"],
+    bio: "One of the great elder statesmen of the German Sinti guitar tradition, Hans'che Weiss was a guitarist of deep feeling and traditional authenticity who spent decades as a vital custodian of the Hot Club style within the Romani community of Germany. He learned from guitarists of Django's own generation and played with a directness and blues feeling rooted in the Sinti tradition.\n\nHis recordings — often made in informal settings that captured the music at its most natural — reveal a player of substance and sincerity. He mentored younger players and performed into old age, leaving behind a body of work that documents a precious thread of the tradition."
+  },
+  {
+    name: "Moreno Winterstein",
+    dates: "1983 – present",
+    nationality: "French-Romani",
+    era: "Contemporary Era",
+    tags: ["New Generation", "Alsace", "Technique"],
+    bio: "One of the most exciting young voices to emerge from the Alsatian Romani community in recent years, Moreno Winterstein combines ferocious technical ability with a warm, singing tone and a melodic sensibility clearly rooted in the manouche oral tradition. He grew up in a musical family in Alsace and absorbed the style from childhood.\n\nHis recordings and live performances have attracted significant attention in the European gypsy jazz world, and he appears alongside established figures with a self-assurance that comes from deep cultural immersion rather than academic study. He is widely regarded as one of the most promising inheritors of the tradition."
+  },
+  {
+    name: "Sinti Schoenberg",
+    dates: "1975 – present",
+    nationality: "Dutch-Romani",
+    era: "Contemporary Era",
+    tags: ["Netherlands", "Acoustic Jazz", "Hot Club Style"],
+    bio: "A Dutch-Romani guitarist who has built a solid reputation in the European gypsy jazz circuit with a direct, swinging style that honors the Hot Club tradition while displaying a personal voice. Growing up in the Netherlands' substantial Romani musical community, he absorbed the style naturally and developed into a reliable and inventive soloist.\n\nHe has performed and recorded with many of the tradition's leading names and is a respected presence at gypsy jazz festivals across Europe. His playing is characterized by clean articulation, strong blues feeling, and a good-natured swing that makes him an ideal collaborator."
+  },
+  {
+    name: "Paulus Schäfer",
+    dates: "1966 – present",
+    nationality: "German",
+    era: "Modern Era",
+    tags: ["Germany", "Hot Club", "Educator"],
+    bio: "A leading non-Romani German guitarist in the Hot Club tradition who has developed considerable authority within the style through decades of immersion and performance. Schäfer studied the manouche tradition rigorously and has performed with major Romani and non-Romani figures in European gypsy jazz.\n\nHe is also recognized as an educator who has helped build the gypsy jazz community in Germany, contributing to the remarkable vitality of the tradition in a country with deep Sinti musical roots. His playing is assured, harmonically literate, and rhythmically authentic."
+  },
+  {
+    name: "Adrien Moignard",
+    dates: "1989 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["New Wave", "Modern Harmony", "Paris", "Composer"],
+    bio: "Among the brightest talents of his generation in French jazz, Adrien Moignard brings a contemporary jazz sensibility to the gypsy tradition without diluting its essential character. A Parisian guitarist who studied both jazz and manouche guitar, he possesses unusually refined harmonic ears and a compositional intelligence that sets his recordings apart from the revival mainstream.\n\nHe has collaborated with musicians across the jazz spectrum and his own recordings feature writing of genuine sophistication. Moignard is one of a handful of younger players who seem poised to genuinely extend the tradition rather than simply preserve it."
+  },
+  {
+    name: "Mathieu Châtelain",
+    dates: "1986 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["Swing Guitar", "Accompanist", "Paris"],
+    bio: "A versatile Parisian guitarist equally accomplished in the role of rhythm accompanist — the unsung backbone of Hot Club jazz — and lead soloist. Châtelain studied manouche guitar seriously and has become a trusted collaborator for major figures in the European gypsy jazz scene.\n\nHis understanding of the 'pompe' rhythm goes beyond mechanical execution; he shapes the music's dynamic flow with sensitivity and intelligence, and his solo work reveals a lyrical player with a strong melodic gift. He represents the high standard of musicianship that distinguishes the best of the contemporary French manouche scene."
+  },
+  {
+    name: "Wawau Adler",
+    dates: "1963 – present",
+    nationality: "German-Romani",
+    era: "Modern Era",
+    tags: ["German Sinti", "Trio Format", "Mainstream Jazz"],
+    bio: "A German Sinti guitarist of considerable accomplishment who has built a career straddling the manouche tradition and mainstream jazz. Wawau Adler grew up in the German Romani community and absorbed the Hot Club style naturally before expanding his horizons to include broader jazz influences and formats.\n\nHis trio and quartet recordings show a player comfortable with the full range of jazz guitar, and his Romani roots give his playing a rhythmic vitality and tonal character that distinguishes it from guitarists with purely academic jazz backgrounds. He is a respected figure in both the gypsy jazz and broader German jazz worlds."
+  },
+  {
+    name: "Frank Vignola",
+    dates: "1964 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["American", "Swing Jazz", "New York", "Educator"],
+    bio: "One of the most accomplished American practitioners of gypsy jazz and swing guitar, Frank Vignola grew up on Long Island steeped in the music of Django Reinhardt and the American swing tradition. He developed a comprehensive technique applicable across multiple guitar styles — from manouche to mainstream jazz to classical — that has made him one of the most in-demand guitarists in New York.\n\nVignola has performed and recorded with a remarkable range of artists including Ringo Starr, Wynton Marsalis, Madonna, and the Boston Pops. His Django-inspired work is authentic and swinging, informed by deep study rather than superficial appropriation, and his educational output has helped bring gypsy jazz to American audiences."
+  },
+  {
+    name: "Gonzalo Bergara",
+    dates: "1977 – present",
+    nationality: "Argentine",
+    era: "Contemporary Era",
+    tags: ["Argentina", "Latin Influence", "Los Angeles"],
+    bio: "A Buenos Aires-born guitarist who discovered Django in his teens and pursued the manouche tradition with a dedication unusual outside Europe. Bergara moved to Los Angeles where he became a central figure in the American gypsy jazz revival, bringing a Latin rhythmic sensibility to the Hot Club idiom that enriches without distorting it.\n\nHis quartet recordings are models of the genre — swinging, melodically rich, and played with a warmth that connects to both the European tradition and his South American roots. He is also a highly regarded educator who has helped build the American gypsy jazz community."
+  },
+  {
+    name: "Mozes Rosenberg",
+    dates: "1978 – present",
+    nationality: "Dutch-Romani",
+    era: "Contemporary Era",
+    tags: ["Rosenberg Family", "Netherlands", "Sinti", "Next Generation"],
+    bio: "The younger brother of Stochelo Rosenberg and the latest virtuoso to emerge from the most celebrated dynasty in gypsy jazz. Born into the Rosenberg Romani family in the Netherlands, Mozes began playing guitar at six under the guidance of his father Mimer, his brother Stochelo, and his uncle Waso Grunholz — the founding father of the Dutch Sinti jazz style. By seven he was already performing on Dutch television with the Rosenberg Trio, and by his early teens he had met and worked alongside flamenco legend Paco de Lucia, a formative encounter that broadened his musical horizon considerably.\n\nWhere Stochelo devoted himself completely to the Django tradition, Mozes has developed a slightly more eclectic voice — still rooted in the Hot Club idiom but open to contemporary jazz phrasing and a wider range of influences. Critics have praised his long, floating melodic lines and the balance between technical ferocity and genuine poetry in his playing. He has performed at Jazz in Marciac, the North Sea Jazz Festival, the Django Festival in Samois, Ronnie Scott\'s in London, Bimhuis in Amsterdam, and venues across Europe, Asia, and North America. He stands today as one of the leading voices of his generation in the tradition."
+  },
+  {
+    name: "Dorado Schmitt",
+    dates: "1957 – present",
+    nationality: "French-Romani",
+    era: "Modern Era",
+    tags: ["Schmitt Family", "French Tradition", "Composer", "Educator", "Alsace"],
+    bio: "A cornerstone of the French gypsy jazz tradition and patriarch of one of its most celebrated musical dynasties. Dorado Schmitt grew up in the Romani encampments around Strasbourg and Forbach in Alsace, learning guitar the time-honored manouche way — by ear, by imitation, and by playing alongside elders. His style is rooted in the melodic vocabulary of Django but inflected with a distinctively French lyrical warmth, shaped by decades of immersion in the Alsatian Romani community where the tradition was simply the air people breathed.\n\nHis son Samson Schmitt has become a celebrated guitarist in his own right, and the two often perform together, creating a living illustration of the oral tradition at its most natural. Dorado has recorded prolifically, performed worldwide, and carried the flame of authentic manouche music with grace and humility. He is widely regarded as one of the essential living links between the founding generation and the contemporary revival."
+  },
+  {
+    name: "Romain Vuillemin",
+    dates: "c. 1980 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["Paris", "Vocalist", "Pre-War Style", "Educator", "Swing"],
+    bio: "A Parisian guitarist, singer, composer, and bandleader who came to gypsy jazz not through Romani heritage but through a passionate self-directed immersion in the pre-war Hot Club sound. Vuillemin began playing guitar in his early teens as a rock fan before discovering Django Reinhardt and reorienting his musical life entirely around the jazz of 1930s Paris. His playing is distinguished by a warm, singing tone, melodic directness, and a conscious commitment to the slower tempos and dancing feel of Django\'s pre-war period — a deliberate counter to the technical velocity arms race of the modern revival.\n\nHe leads the Romain Vuillemin Quartet, active since 2011, with violinist Guillaume Singer and a rhythm section steeped in the tradition. The group has performed in over twenty countries and released more than ten albums, including Swinging in Paris — a prewar Django tribute praised for its spontaneity and joy. He has collaborated with Angelo Debarre, Adrien Moignard, Stochelo Rosenberg, and the Umlaut Big Band, and is a respected educator who has taught at Django in June and given private lessons to players from around the world. Critics have called his playing warm, brilliant, and sensitive, noting that virtuosity is always in service of musicality."
+  },
+  {
+    name: "Olli Soikkeli",
+    dates: "1991 – present",
+    nationality: "Finnish",
+    era: "Contemporary Era",
+    tags: ["Finland", "New York City", "Rhythm Future Quartet", "Rising Star"],
+    bio: "Born in Nurmes, Finland in 1991, Olli Soikkeli picked up the guitar at twelve and discovered Django Reinhardt a few years later — a meeting that redirected his musical life entirely. He quickly became the leading gypsy jazz voice in Finland, performing at clubs and festivals across the country before touring Europe with German Sinti guitarist Paulus Schafer. In 2014 he moved to New York City and almost immediately established himself as the top call for gypsy jazz in a city with no shortage of world-class players, performing at Birdland, the Blue Note, Lincoln Center, and Town Hall.\n\nHis co-led Rhythm Future Quartet with violinist Jason Anick has been his most celebrated project, releasing a debut album in 2014 and the acclaimed Travels in 2016 — named one of the best albums of the year by both Huffington Post and All About Jazz. A subsequent album featuring Stochelo Rosenberg, Cyrille Aimee, and Brazilian bandolimist Hamilton de Holanda showed the breadth of his musical reach. He has performed with Bucky Pizzarelli, Tommy Emmanuel, Andreas Oberg, and Anat Cohen, toured internationally with the International Guitar Night series, and recorded more than ten albums. As one critic put it, gypsy jazz became an international dialect long ago — and Olli Soikkeli is one of its most adept and resourceful contemporary voices."
+  },
+  {
+    name: "Vinny Raniolo",
+    dates: "c. 1985 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["New York", "Frank Vignola", "Rhythm Guitar", "Swing", "PBS"],
+    bio: "A Long Island-born guitarist who came to jazz at sixteen through records by Joe Pass, Bucky Pizzarelli, and Herb Ellis, and has built a career as one of the most in-demand rhythm guitarists and swing players on the American scene. Raniolo is perhaps best known as the long-time musical partner of Frank Vignola — together they have performed thousands of concerts across eighteen countries, recording a series of acclaimed duo albums and becoming one of the most cohesive guitar partnerships in contemporary jazz.\n\nHe has appeared on three PBS television specials, including Frank Vignola's Four Generations of Guitar alongside Bucky Pizzarelli, and Tommy Emmanuel and Friends. Film and recording credits include soundtracks for HBO's Boardwalk Empire, Woody Allen's Cafe Society, and Martin Scorsese's The Irishman. He has performed at the Sydney Opera House, Lincoln Center, and Teatro Olimpico in Italy, and collaborated with Tommy Emmanuel, Leon Redbone, Vince Giordano, and Deana Martin. His debut album as a leader, Air Guitar, showcased his range across early jazz, gypsy swing, and classic American songbook material."
+  },
+  {
+    name: "Yorgui Loeffler",
+    dates: "1979 – present",
+    nationality: "French",
+    era: "Contemporary Era",
+    tags: ["Alsace", "Self-Taught", "Haguenau", "Educator", "Hot Club Style"],
+    bio: "Born in Haguenau, Alsace in 1979 into a musical family, Yorgui Loeffler grew up in the heartland of French gypsy jazz — the Alsace-Lorraine region that has produced so many of the tradition's great voices. He came to the music through his brother, guitarist Gigi Loeffler, beginning on rhythm guitar at fourteen before taking over the lead role as his talent outgrew the supporting function. His formation was largely self-taught, driven by an immersion in the recordings of Tchavolo Schmitt, Bireli Lagrene, and Stochelo Rosenberg, from which he developed a fast, precise technique and a personal tone that is distinctly his own.\n\nLoeffler has built a reputation across Europe as a commanding live performer and a guitarist of genuine melodic invention. His discography includes albums recorded with Spanish violinist Marta Sierra, with whom he released the acclaimed C Jam Blues in 2023 — a record of fourteen swing standards that showcases his scorching improvisation and easy interplay with strings. He has also been the subject of a multi-volume instructional series by DC Music School, testament to the depth and distinctiveness of his approach. His son Magnio Loeffler has followed him into the tradition, appearing on guitar alongside him in recent recordings."
+  },
+  {
+    name: "Gismo Graf",
+    dates: "1992 – present",
+    nationality: "German-Romani",
+    era: "Contemporary Era",
+    tags: ["Stuttgart", "Sinti", "Gismo Graf Trio", "Composer", "Rising Star"],
+    bio: "Born on October 1, 1992 in Stuttgart into a Sinti musical family, Gismo Graf began playing guitar at six under the guidance of his father Joschi Graf, co-founder of the Zigeli Winter Quintet and a respected gypsy guitarist in his own right. By twelve he was making guest appearances in his father's band; by sixteen he had formed his first ensemble, 16 Gypsy Strings. On his eighteenth birthday — October 1, 2010 — he launched the Gismo Graf Trio with Joschi on rhythm guitar and bassist Joel Locher, and the trio has been one of the most celebrated ensembles in European gypsy jazz ever since.\n\nWhat distinguishes Graf from many of his contemporaries is a restless compositional intelligence that refuses to be confined to the Django canon. His recordings blend gypsy swing with bossa nova, pop, bebop harmonies, and his own original pieces, while always maintaining the rhythmic propulsion and tonal warmth of the Sinti tradition. He has performed at the Django Reinhardt Festival in Samois-sur-Seine, the Rheingau Musik Festival, the Blue Balls Festival in Lucerne, and festivals across Europe. He has collaborated with Stochelo Rosenberg, Ludovic Beier, Tim Kliphuis, and Diknu Schneeberger. Critics have called him a shooting star who gives gypsy jazz a contemporary face without losing its soul."
+  },
+  {
+    name: "Elias Prinz",
+    dates: "2000 – present",
+    nationality: "German",
+    era: "Contemporary Era",
+    tags: ["Bavaria", "Munich", "Rising Star", "Kurt Maas Award", "BMW Young Artist"],
+    bio: "Born on July 19, 2000 in the Allgau region of Bavaria, Elias Prinz represents the most exciting new generation of gypsy jazz in Germany. He began playing guitar at five, starting with classical lessons before discovering jazz and improvisation. At twelve, a CD by Viennese guitarist Diknu Schneeberger ignited his passion for jazz manouche, and he threw himself into the tradition through deep friendships with Sinti musicians in Germany — an immersion that gave his playing an authenticity rare in a non-Romani player of his age.\n\nHe formed his first trio in 2014 with his father Jonas on rhythm guitar, studied at the Neue Jazzschool Munchen and then the Hochschule fur Musik und Theater Munchen, and began appearing at major European festivals including the Django Reinhardt Festival in Samois-sur-Seine. In 2023 he won first prize at the prestigious Kurt Maas Jazz Award, with the Suddeutsche Zeitung praising his trio for a Django tribute of barely surpassable virtuosity, respect, and imagination. In 2025 he was named one of three recipients of the BMW Young Artist Jazz Award, recognized as a new face of the current gypsy jazz renaissance. Marco Pignataro, artistic director of the Berklee Global Jazz Institute, saw him play and simply said: When he started playing, I was like, What?"
+  },
+  {
+    name: "Richard Sheppard",
+    dates: "c. 1955 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Ameranouche", "New Hampshire", "Berklee", "World Improv", "Gypsy Flamenco Swing"],
+    bio: "A Southern New Jersey native now based in Southern New Hampshire, Richard Sheppard — known to fellow musicians as Shepp — came to gypsy jazz through a lifelong immersion in American roots music and a five-year study of jazz guitar with the great Pat Martino in Philadelphia. A graduate of Berklee College of Music, he also studied composition and aesthetics with Dr. Frank Haas and guitar with Attilla Zoller, bringing a formal musical depth to a playing style that resists easy classification. The moment of revelation came when he connected Django Reinhardt to Joe Maphis through a shared phrasing in The Sheik of Araby and went, in his own words, into the Django chamber — spending years exploring the breadth of what Reinhardt created.\n\nSheppard is best known as the founder and guitarist of Ameranouche, a World Improv trio whose name blends American and Manouche — a declaration of purpose. The group plays what they call gypsy flamenco swing: a fusion of Hot Club jazz, flamenco, and free improvisation that honors the Django tradition while reaching beyond it into genuinely new territory. He has taught guitar and music theory at Berklee, Bennington College, the Pittsfield Community Music School, and Williams College, and has released multiple albums since 2006. As a musician and as a thinker about music, Sheppard is one of the more philosophically engaged figures in the American gypsy jazz world."
+  },
+  {
+    name: "Christophe Astolfi",
+    dates: "1976 – present",
+    nationality: "French-Romani",
+    era: "Contemporary Era",
+    tags: ["Rhythm Guitar", "Corsica", "Accompanist"],
+    bio: "A rhythm guitarist of rare authority from Corsica who has become one of the most sought-after accompanists in European gypsy jazz. Astolfi's mastery of the manouche 'pompe' is total — his time is impeccable, his chord voicings full and resonant, and his dynamic sensitivity to the soloist he accompanies makes him invaluable in any ensemble context.\n\nHe has worked extensively with the leading soloists of the contemporary scene and his presence on a recording is a reliable indicator of high musical standards. Like all great rhythm guitarists, the full measure of his contribution is best appreciated by those who listen closely to what happens beneath the melody."
+  },
+  {
+    name: "George Cole",
+    dates: "1960 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Bay Area", "David Grisman Quintet", "Acoustic Disc", "BAMMIE Award", "Vocalist", "Educator"],
+    bio: "A San Francisco native and BAMMIE Award-winning guitarist whose musical world places Django Reinhardt and The Ramones, Nat King Cole and Doc Watson in equal company with Irving Berlin, George Gershwin, and the Great American Songbook. Cole occupies the guitar chair for the David Grisman Quintet and has two releases on Grisman's celebrated Acoustic Disc label. Grisman has called him a major guitar talent who plays everything from gypsy jazz to rhythm and blues and has helped take Dawg music in many new and wonderful directions.\n\nFor a decade Cole served as guitar teacher and mentor to Billie Joe Armstrong and Mike Dirnt of Green Day — both now Rock and Roll Hall of Fame inductees. He also played on Chris Isaak's platinum-selling Forever Blue and was handpicked by jazz legend Keely Smith for her final touring band. He is co-founder and artistic director of the annual Esprit de Django et Stéphane Festival at the Freight and Salvage in Berkeley, honoring both Django Reinhardt and Stéphane Grappelli. Today he leads the George Cole Trio with his son Valentino Cole and violinist Anton Patzner, performing jazz manouche and original compositions at SFJAZZ, Yoshi's, the Freight and Salvage, and beyond."
+  },
+  {
+    name: "Valentino Cole",
+    dates: "c. 2005 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Bay Area", "George Cole Trio", "Next Generation", "Rising Star"],
+    bio: "The son of BAMMIE Award-winning guitarist George Cole, Valentino Cole is the newest voice in the Cole musical lineage and a rising presence in the Bay Area jazz manouche scene. He performs alongside his father in the George Cole Trio — with violinist Anton Patzner completing the ensemble — stepping into a tradition that has been literally part of his upbringing, the music as natural to him as the household air he grew up breathing.\n\nThere is something irreplaceable about a musician who comes to gypsy jazz this way — not through study or discovery in adulthood, but through lifelong immersion in a family where the music was always playing. The great Romani dynasties — the Rosenbergs, the Schmitts, the Reinhardts — understood that the tradition passes most purely this way, from parent to child, in the day-to-day sharing of music before it is ever a formal subject. Valentino Cole is at the beginning of what promises to be a significant musical journey, carrying forward a lineage that runs from the living rooms of Richmond, California, through the stages of SFJAZZ and the Freight and Salvage, and back in spirit to the cafés of 1930s Paris where Django first set the world on fire."
+  },
+  {
+    name: "Jimmy Grant",
+    dates: "c. 1980 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Northern California", "Educator", "Camp Django", "Hot Club of San Francisco"],
+    bio: "A Northern California guitarist who grew up surrounded by Russian folk, Bluegrass, Celtic, and Classical music and found his deepest calling in the music of Django Reinhardt. Under the guidance of guitarists Jim Nichols and Howard Alden, Grant developed a personal voice blending the Hot Club idiom with his broad influences — Bach, Benny Goodman, and Joe Pass among them.\n\nHe has performed alongside David Grisman, Gonzalo Bergara, Andreas Öberg, Tim Kliphuis, Robin Nolan, and the Hot Club of San Francisco, and has appeared at Djangofest Northwest, the Savannah Music Festival, and the New York Hot Jazz Festival, as well as venues throughout Europe. As an educator he has taught at colleges across the United States, served on the faculty of Django in June and the Grappelli-Django Camp in Holland, and hosts his own Camp Django in Ashland, Oregon. He also contributes to Gypsy Jazz Secrets Magazine and offers online instruction in the manouche style."
+  },
+  {
+    name: "Tommy Davy",
+    dates: "c. 1985 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Los Angeles", "Ethnomusicologist", "Luthier", "Trio Dinicu", "Pre-War Selmer"],
+    bio: "Born in Laguna Beach, California to a musical family — his father a jazz guitarist devoted to Django Reinhardt — Tommy Davy began playing guitar at eight and by his early twenties had established himself as one of the most authentically schooled American practitioners of gypsy jazz. He studied at the California Institute of the Arts under Larry Koonse and Macedonian guitarist Miroslav Tadic, and deepened his formation by traveling to Europe to study directly with masters including Angelo Debarre, Serge Camps, and Petro Ivanovitch.\n\nHis scope extends well beyond jazz manouche into Romanian, Hungarian, Yugoslavian, and Russian Romani folk traditions — he is one of the rare non-Romani guitarists who can navigate all of these idioms with genuine credibility. He has toured with David Grisman, Stéphane Wrembel, Angelo Debarre, and Robin Nolan, and performed at Djangofest venues nationwide and at New York's Birdland. Davy is also a respected luthier and instrument restorer whose clientele includes John Jorgenson, Andy Summers, Derek Trucks, Pat Metheny, Nile Rodgers, and Willie Nelson. He plays on an original 1939 Selmer guitar. Critics have described his work as 'jewels of gypsy music played with great poise and authenticity — magic is happening.'"
+  },
+  {
+    name: "Luca Pino",
+    dates: "c. 1990 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Los Angeles", "Pino Noir", "Postmodern Jukebox", "Swing Dance", "Hot Jazz"],
+    bio: "A Los Angeles-born guitarist whose hot jazz sensibility draws from Django Reinhardt, Oscar Alemán, and Freddie Green — three distinct threads of 1930s guitar mastery woven into a style that is both historically grounded and immediately alive. Pino leads his own quartet, Pino Noir, reimagining the Paris swing sound with sharp arrangements, original compositions, and an instinct for showmanship.\n\nHe has headlined gypsy jazz festivals including Djangofest Northwest in Seattle, the Django Reinhardt Birthday Celebration in Berkeley, and the Djangojazz Festival in Mexico, and has taught at Django in June in Massachusetts. His love of pre-war aesthetics also led him to world tours with Postmodern Jukebox, bringing vintage guitar work to global audiences. His 2025 recording The Lafayette Sessions, cut in a historic Art Deco Long Beach apartment building, captures Pino Noir's unbridled take on gypsy jazz drawing from Django's electric 1940s period."
+  },
+  {
+    name: "John Jorgenson",
+    dates: "1956 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["Desert Rose Band", "Hellecasters", "Elton John", "Grammy", "US Ambassador of Gypsy Jazz"],
+    bio: "Born in Madison, Wisconsin and raised in Southern California, John Jorgenson is among the most decorated multi-instrumentalists in American music — fluent on guitar, mandolin, mandocello, dobro, pedal steel, piano, upright bass, clarinet, bassoon, and saxophone. He first encountered Django Reinhardt in 1979 and pursued the music with scholarly devotion, tracking down obscure recordings and rare film footage at a time when such material was nearly impossible to find.\n\nHe co-founded the Desert Rose Band with Chris Hillman in 1986, winning three consecutive Academy of Country Music Guitarist of the Year awards, then spent six years as lead guitarist for Elton John. Through it all he developed his manouche practice, forming the John Jorgenson Quintet in 2004 — the first American act ever to headline the prestigious Django Reinhardt Memorial Festival in Samois-sur-Seine. He portrayed Django Reinhardt on film in Head in the Clouds alongside Charlize Theron and Penélope Cruz, and won a Grammy for Best Country Instrumental Performance. Dubbed 'the US Ambassador of Gypsy Jazz,' his work has brought the tradition to audiences across the globe."
+  },
+  {
+    name: "Charlie Roman",
+    dates: "c. 1985 – present",
+    nationality: "American",
+    era: "Contemporary Era",
+    tags: ["New York City", "Hot Club", "Crooner", "Vocalist", "Bandleader", "Swing"],
+    bio: "A dynamic guitarist, smooth-voiced crooner, and bandleader who has become one of the most recognizable names in New York City's traditional and gypsy jazz scene. Charlie Roman — performing under a stage name in the tradition of the great jazz showmen — began his journey at local jam sessions, where lightning-fast technique and an instinctive sense of swing set him apart early. Over more than fifteen years he has built a reputation as a consummate performer at some of New York's most storied venues, including 54 Below, The Rainbow Room, and Lincoln Center.\n\nHe leads the Charlie Roman Hot Club, one of the most driving and rhythmically compelling bands in the American gypsy jazz revival, drawing directly from Django Reinhardt and St\u00e9phane Grappelli's original Quintette du Hot Club de France. He also fronts the Glad Rags Orchestra, a ten-piece ensemble exploring 1920s201340s jazz and popular music from Britain, Spain, and America. His ability to combine authentic vintage style with genuine vocal warmth and guitar fluency makes him a standout figure in a scene that too rarely integrates singing and playing at the highest level."
+  },
+  {
+    name: "Duved Dunayevsky",
+    dates: "c. 1990 – present",
+    nationality: "Israeli-French",
+    era: "Contemporary Era",
+    tags: ["Paris", "Hot Club de France", "Pre-Bop", "Musette", "Israel"],
+    bio: "Born in Israel and now firmly established in Paris, Duved Dunayevsky is widely recognized as one of the most authentic and compelling interpreters of Django Reinhardt's guitar style working today. He came to the music largely through self-directed study as a teenager in Israel, developing a command of the pre-war Hot Club idiom — its tone, phrasing, ornaments, and rhythmic sensibility — that stunned listeners when he arrived on the international scene.\n\nIn 2015 the French government awarded him a Talent and Competence visa in recognition of his musical gift, after which he settled in Paris and formed Duved's Hot Five, dedicated to the original Quintette du Hot Club de France sound. He has since become the bandleader of the Quintette du Hot Club de France itself, the most direct institutional heir to Django's original ensemble. His repertoire reaches beyond gypsy jazz into musette, Parisian waltz, and the broader pre-bop aesthetic of 1920s and 1930s jazz — areas he explores with his Pre-Bop Orchestra. He has performed at festivals across Europe, Asia, and North America, earned a dedicated following among both specialists and casual listeners, and become a sought-after educator and clinician. The DC Music School's multi-volume 'In The Style Of Duved Dunayevsky' instructional series speaks to the depth and distinctiveness of his approach."
+  }
+];
+
+// Deduplicate
+const seen = new Set();
+const uniqueGuitarists = guitarists.filter(g => {
+  const key = g.name + g.dates;
+  if (seen.has(key)) return false;
+  seen.add(key); return true;
+});
+
+// Sort alphabetically
+uniqueGuitarists.sort((a,b) => a.name.localeCompare(b.name));
+
+let activeEra = 'All';
+let searchTerm = '';
+
+function getEras() {
+  const order = ['Founding Era','Post-Django Era','Modern Era','Contemporary Era'];
+  const eras = [...new Set(uniqueGuitarists.map(g => g.era))];
+  return ['All', ...order.filter(e => eras.includes(e))];
+}
+
+function buildEraFilters() {
+  const container = document.getElementById('eraFilters');
+  getEras().forEach(era => {
+    const btn = document.createElement('button');
+    btn.className = 'era-btn' + (era === 'All' ? ' active' : '');
+    btn.textContent = era;
+    btn.onclick = () => {
+      activeEra = era;
+      document.querySelectorAll('.era-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function filterCards() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  renderCards();
+}
+
+function renderCards() {
+  const grid = document.getElementById('grid');
+  const filtered = uniqueGuitarists.filter(g => {
+    const eraMatch = activeEra === 'All' || g.era === activeEra;
+    const searchMatch = !searchTerm ||
+      g.name.toLowerCase().includes(searchTerm) ||
+      g.nationality.toLowerCase().includes(searchTerm) ||
+      g.tags.some(t => t.toLowerCase().includes(searchTerm)) ||
+      g.bio.toLowerCase().includes(searchTerm);
+    return eraMatch && searchMatch;
+  });
+
+  document.getElementById('resultsInfo').textContent =
+    `${filtered.length} ${filtered.length === 1 ? 'guitarist' : 'guitarists'} found`;
+
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">No guitarists match your search. <em>Cherchez encore…</em></div>';
+    return;
+  }
+
+  filtered.forEach((g, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = `${i * 0.045}s`;
+    card.innerHTML = `
+      <div class="card-era">${g.era}</div>
+      <div class="card-name">${g.name}</div>
+      <div class="card-dates">${g.dates}</div>
+      <div class="card-nationality">${g.nationality}</div>
+      <div class="card-divider"></div>
+      <div class="card-bio">${g.bio.split('\n\n')[0]}</div>
+      <div class="card-tags">${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <span class="corner-ornament">♦</span>
+    `;
+    card.onclick = () => openModal(g);
+    grid.appendChild(card);
+  });
+}
+
+function openModal(g) {
+  const content = document.getElementById('modalContent');
+  const paras = g.bio.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  content.innerHTML = `
+    <div class="modal-era">${g.era}</div>
+    <div class="modal-name">${g.name}</div>
+    <div class="modal-dates">${g.dates}</div>
+    <div class="modal-nationality">${g.nationality}</div>
+    <div class="modal-divider"></div>
+    <div class="modal-bio">${paras}</div>
+    <div class="modal-tags">${g.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModalDirect(); });
+
+buildEraFilters();
+renderCards();
+</script>
+</body>
+</html>
